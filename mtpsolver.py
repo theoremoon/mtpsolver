@@ -39,13 +39,16 @@ for i, ct in enumerate(ciphers):
     for index in space_index:
         key[index] = xor_with_space[index]
 
+def encode(p):
+    return "".join(chr(b) if key[i] and b != 0x0a and b != 0x0d  else "*" for i, b in enumerate(p))
+
 fd, name = tempfile.mkstemp()
 while True:
     plaintexts = []
     for c in ciphers:
         plaintext = xor(c, bytes(key))
         plaintexts.append(
-            "".join(chr(b) if key[i] else "*" for i, b in enumerate(plaintext))
+            encode(plaintext)
         )
 
     with open(name, "w") as f:
@@ -69,4 +72,4 @@ while True:
 
 for c in ciphers:
     plaintext = xor(c, bytes(key))
-    print("".join(chr(b) if key[i] else "*" for i, b in enumerate(plaintext)))
+    print(encode(plaintext))
